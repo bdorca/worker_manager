@@ -9,20 +9,22 @@ angular.module('app.services', [])
 
   .factory('workerFactory', ['RequestService', function (RequestService) {
     var workerList = [];
-    for (var i = 0; i < 3; i++) {
-      workerList[i] = {
-        name: "worker " + i,
-        id: i,
-        description: "alma " + i
-      }
-
-    }
 
     function fetch() {
 
       function successCallback(response) {
         console.log("hawked");
         console.log(response.data);
+        var ids=Object.keys(response.data);
+        for(var i=0;i<ids.length;i++) {
+          var id=ids[i];
+          var name=response.data[id];
+          workerList[i]={
+            name : name,
+            id: id,
+            master: id.indexOf("/")<0
+          }
+        }
       }
 
       function errorCallback(response) {
@@ -39,7 +41,11 @@ angular.module('app.services', [])
         return workerList;
       },
       getWorker: function (workerId) {
-        return workerList[parseInt(workerId)];
+        for(var i=0;i<workerList.length;i++){
+          if(workerList[i].id===workerId){
+            return workerList[i];
+          }
+        }
       },
       fetch: fetch
     }
@@ -70,12 +76,15 @@ angular.module('app.services', [])
       status: 'status'
     };
 
-    function cmd(worker, type, successCallback, errorCallback) {
+    function cmd(worker, workercmd, successCallback, errorCallback) {
       params = {
-        workercmd: type,
-        workeraddr: worker.id
+        workercmd: workercmd,
+        workeraddr: worker.id,
+        getParams: function(){
+          return "workercmd="+this.workercmd+"&workeraddr="+this.workeraddr;
+        }
       };
-      RequestService.sendRequest(mainURL + "controller/workercmd", METHODS.POST, true, successCallback, errorCallback, params);
+      RequestService.sendRequest(mainURL + "controller/workercmd", METHODS.POST, true, successCallback, errorCallback, params.getParams());
     }
 
     return {
@@ -100,10 +109,11 @@ angular.module('app.services', [])
   .service('CredentialService', [function () {
     return {
       hawkHeader: function (url, method) {
+
+
         var credentials = JSON.parse(localStorage.getItem("credentials"));
         var header = Hawk.client.header(url, method, {
-          credentials: credentials,
-          ext: "some-app-ext-data"
+          credentials: credentials
         });
         console.log(header.field);
         return header.field;
@@ -122,12 +132,16 @@ angular.module('app.services', [])
 
   .service('RequestService', ['$http', 'CredentialService', function ($http, CredentialService) {
     function sendRequest(url, method, needCred, succesCallback, errorCallback, params) {
+
+      if(params) {
+        url += "?" + params;
+      }
       var requestOptions = {
         url: url,
         method: method,
-        params: params,
         headers: {Accept: "application/json"}
       };
+
       if (needCred) {
         requestOptions.headers.Authorization = CredentialService.hawkHeader(url, method);
         // requestOptions.params = CredentialService.hawkBewit(url);
