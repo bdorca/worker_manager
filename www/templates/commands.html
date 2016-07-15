@@ -1,0 +1,14 @@
+<ion-view title="Commands" id="commands_page" class=" ">
+  <ion-content padding="true" class="has-header">
+    <ion-list id=command-list" class=" ">
+      <ion-item class="item item-button-right" ng-repeat='command in commands'>
+        <select id="select_worker" class="select item-select">
+          <option ng-repeat="worker in workers" value={{worker.id}}>{{worker.name}}</option>
+        </select>
+        <button class="button button-positive" on-touch="cmd('{{command.name}}')">
+          <i class="button-icon {{command.icon}}"></i>
+        </button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
