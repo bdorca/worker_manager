@@ -40,7 +40,7 @@ angular.module('app.routes', [])
             controller: 'detailsCtrl'
           }
         }
-      })
+      });
     
 
 
