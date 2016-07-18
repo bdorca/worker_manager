@@ -4,7 +4,7 @@
 
 angular.module('app.controllers')
 
-  .controller('workersCtrl', function ($scope, workerFactory) {
+  .controller('workersCtrl', ['$scope','workerFactory','$state',  function ($scope, workerFactory, $state) {
 
     $scope.workers = workerFactory.getWorkers();
 
@@ -13,8 +13,19 @@ angular.module('app.controllers')
     };
 
     $scope.refresh = function () {
-      workerFactory.fetch();
-      workers = workerFactory.getWorkers();
+      workerFactory.fetch().finally(function() {
+        // Stop the ion-refresher from spinning
+        $scope.$broadcast('scroll.refreshComplete');
+      });
+    };
+
+    $scope.toDetails=function(worker){
+      if(worker.master){
+        $state.go('menu.master_details',{"workerId": worker.id})
+      }else{
+        $state.go('menu.details',{"workerId": worker.id})
+      }
     }
-  });
+
+  }]);
 

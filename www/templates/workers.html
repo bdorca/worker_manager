@@ -11,10 +11,16 @@
   </ion-nav-bar>
 
   <ion-content padding="true" class="has-header">
+    <ion-refresher pulling-text="Pull to refresh..." on-refresh="refresh()">
+    </ion-refresher>
     <ion-list id="workers-list" class=" ">
-      <ion-item class="card" ng-repeat='worker in workers' ui-sref="menu.details({'workerId': '{{worker.id}}'})">
-        <i class="icon ion-ionic"></i>
-        {{worker.name}}
+      <ion-item class="card" ng-repeat='worker in workers' on-touch="toDetails(worker)">
+        <!--ui-sref="menu.details({'workerId': '{{worker.id}}'})"> -->
+        <p class="item-icon-right"><i ng-class="{'icon ion-checkmark': worker.status=='working',
+                      'icon ion-star': worker.status=='master',
+                      'icon ion-close': worker.status=='stopped'}"></i></p>
+        <p><b>{{worker.name}}</b></p>
+        <p style="word-wrap: break-word;">{{worker.id}}</p>
       </ion-item>
     </ion-list>
   </ion-content>

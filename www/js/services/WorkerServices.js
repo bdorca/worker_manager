@@ -3,13 +3,13 @@
  */
 angular.module('app.services')
 
-  .factory('workerFactory', ['RequestService', function (RequestService) {
+  .factory('workerFactory', ['RequestService', 'WorkerService', '$q', function (RequestService, WorkerService, $q) {
     var workerList = [];
+    var deferred=$q.defer();
 
     function fetch() {
 
       function successCallback(response) {
-        console.log("hawked");
         console.log(response.data);
         var ids = Object.keys(response.data);
         for (var i = 0; i < ids.length; i++) {
@@ -18,18 +18,49 @@ angular.module('app.services')
           workerList[i] = {
             name: name,
             id: id,
-            master: id.indexOf("/") < 0
+            master: id.indexOf("/") < 0,
+            status: "master"
           }
         }
+        setStatuses();
+        deferred.resolve();
       }
 
       function errorCallback(response) {
         console.log("fail");
         console.log(response.data);
+        deferred.reject();
       }
 
       RequestService.sendRequest(mainURL + "controller/addressbook", METHODS.GET, true, successCallback, errorCallback, null);
 
+      return deferred.promise;
+    }
+
+    function setStatuses() {
+      for (var i = 0; i < workerList.length; i++) {
+        if (!workerList[i].master) {
+          WorkerService.status(workerList[i],
+            function (response) {
+              var id = response.data.result.id;
+              var status = response.data.result.currStatus.status;
+              setWorkerStatus(id, status)
+            },
+            function (response) {
+              console.log(resopnse)
+            })
+        }
+      }
+    }
+
+    function setWorkerStatus(id, status) {
+      for (var i = 0; i < workerList.length; i++) {
+        if (workerList[i].id.indexOf(id)>-1) {
+          workerList[i].status = status;
+          console.log(workerList[i].status)
+          return;
+        }
+      }
     }
 
     return {
@@ -43,8 +74,11 @@ angular.module('app.services')
           }
         }
       },
-      fetch: fetch
+      fetch: fetch,
+      setWorkerStatus: setWorkerStatus
     }
+
+
   }])
 
   .service('WorkerService', ['RequestService', function (RequestService) {
@@ -79,6 +113,37 @@ angular.module('app.services')
       },
       status: function (worker, successCallback, errorCallback) {
         cmd(worker, COMMAND_TYPE.status, successCallback, errorCallback)
+      },
+      cmd: function (worker, type, successCallback, errorCallback) {
+        cmd(worker, type, successCallback, errorCallback)
+      }
+    }
+  }])
+
+  .service('MasterService', ['RequestService', function (RequestService) {
+
+    var COMMAND_TYPE = {
+      registry: 'registry',
+      shutdown: 'shutdown'
+    };
+
+    function cmd(worker, mastercmd, successCallback, errorCallback) {
+      params = {
+        mastercmd: mastercmd,
+        masteraddr: worker.id,
+        getParams: function () {
+          return "mastercmd=" + this.mastercmd + "&masteraddr=" + this.masteraddr;
+        }
+      };
+      RequestService.sendRequest(mainURL + "controller/mastercmd", METHODS.POST, true, successCallback, errorCallback, params.getParams());
+    }
+
+    return {
+      registry: function (worker, successCallback, errorCallback) {
+        cmd(worker, COMMAND_TYPE.registry, successCallback, errorCallback)
+      },
+      shutdown: function (worker, successCallback, errorCallback) {
+        cmd(worker, COMMAND_TYPE.shutdown, successCallback, errorCallback)
       },
       cmd: function (worker, type, successCallback, errorCallback) {
         cmd(worker, type, successCallback, errorCallback)

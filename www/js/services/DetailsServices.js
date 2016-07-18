@@ -4,17 +4,24 @@
 angular.module('app.services')
 
   .factory('commandFactory', ['RequestService', function (RequestService) {
-    commands = [
+    workerCommands = [
       {name: 'start', icon: 'ion-play'},
       {name: 'stop', icon: 'ion-stop'},
       {name: 'reload', icon: 'ion-refresh'},
       {name: 'status', icon: 'ion-search'}
+    ];
 
+    masterCommands=[
+      {name: 'registry', icon: 'ion-play'},
+      {name: 'shutdown', icon: 'ion-stop'}
     ];
 
     return {
-      getCommands: function () {
-        return commands
+      getWorkerCommands: function () {
+        return workerCommands
+      },
+      getMasterCommands: function () {
+        return masterCommands
       }
     }
   }]);

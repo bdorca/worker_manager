@@ -20,7 +20,7 @@ angular.module('app.routes', [])
         abstract: true,
         controller: 'loginCtrl'
       })
-      
+
 
       .state('menu.workers', {
         url: '/workers',
@@ -40,8 +40,17 @@ angular.module('app.routes', [])
             controller: 'detailsCtrl'
           }
         }
+      })
+      .state('menu.master_details', {
+        url: '/master_details/{{workerId}}',
+        views: {
+          'side-menu': {
+            templateUrl: 'templates/master_details.html',
+            controller: 'masterdetailsCtrl'
+          }
+        }
       });
-    
+
 
 
     $urlRouterProvider.otherwise('/login')

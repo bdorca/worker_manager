@@ -1,0 +1,53 @@
+(data)
+
+status
+
+{
+  "result": {
+    "id": "dorka-VirtualBox-worker-3209",
+    "masterId": "dorka-VirtualBox-master-3199",
+    "hostname": "dorka-VirtualBox",
+    "pid": 3209,
+    "startTime": "2016-07-15T12:31:41.309Z",
+    "lastUpdate": "2016-07-15T12:39:47.737Z",
+    "memUsage": {},
+    "moduleName": "iface-hapi",
+    "currStatus": {
+      "status": "working"
+    }
+  }
+}
+
+{
+  "result": {
+    "id": "dorka-VirtualBox-worker-3263",
+    "masterId": "dorka-VirtualBox-master-3199",
+    "hostname": "dorka-VirtualBox",
+    "pid": 3263,
+    "startTime": "2016-07-15T12:41:39.498Z",
+    "lastUpdate": "2016-07-15T12:44:53.412Z",
+    "memUsage": {},
+    "moduleName": "iface-hapi",
+    "currStatus": {
+      "status": "stopped"
+    }
+  }
+}
+
+stop
+
+{
+  "result": "iface-hapi stopped"
+}
+
+start
+
+{
+  "result": "iface-hapi MSP REST API started at: http://localhost:30150"
+}
+
+reload
+
+{
+  "result": "restarting"
+}

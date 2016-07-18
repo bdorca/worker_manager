@@ -3,23 +3,17 @@
  */
 
 Hawk = require("hawk");
-METHODS = {
-  GET: "GET",
-  POST: "POST"
-};
+
 
 angular.module('app.services')
 
   .service('CredentialService', [function () {
     return {
       hawkHeader: function (url, method) {
-
-
         var credentials = JSON.parse(localStorage.getItem("credentials"));
         var header = Hawk.client.header(url, method, {
           credentials: credentials
         });
-        console.log(header.field);
         return header.field;
       },
 
