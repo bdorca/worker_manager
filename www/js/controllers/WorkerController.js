@@ -4,7 +4,7 @@
 
 angular.module('app.controllers')
 
-  .controller('workersCtrl', ['$scope','workerFactory','$state',  function ($scope, workerFactory, $state) {
+  .controller('workersCtrl', ['$scope','WorkerService', 'workerFactory','$state',  function ($scope, WorkerService, workerFactory, $state) {
 
     $scope.workers = workerFactory.getWorkers();
 
@@ -13,7 +13,7 @@ angular.module('app.controllers')
     };
 
     $scope.refresh = function () {
-      workerFactory.fetch().finally(function() {
+      WorkerService.fetch(function() {
         // Stop the ion-refresher from spinning
         $scope.$broadcast('scroll.refreshComplete');
       });

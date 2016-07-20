@@ -4,7 +4,7 @@
 
 angular.module('app.controllers')
 
-  .controller('loginCtrl', ['$scope', '$ionicPopup', 'workerFactory', 'RequestService', function ($scope, $ionicPopup, workerFactory, RequestService) {
+  .controller('loginCtrl', ['$scope', '$ionicPopup', '$state', 'RequestService', function ($scope, $ionicPopup, $state, RequestService) {
 
     $scope.login = function () {
       var customer = document.getElementById('input_customer_id').value;
@@ -14,8 +14,8 @@ angular.module('app.controllers')
         username: username,
         password: password,
         customer: customer,
-        getParams: function(){
-          return "username="+username+"&password="+password+"&customer="+customer;
+        getParams: function () {
+          return "username=" + username + "&password=" + password + "&customer=" + customer;
         }
       };
       console.log(user);
@@ -23,14 +23,13 @@ angular.module('app.controllers')
       function successCallback(response) {
         console.log("login");
         console.log(response);
-        window.location = '#/side-menu/workers';
+        $state.go('menu.workers');
         credentials = {
           key: response.data.key,
           id: response.data.hawk_id,
           algorithm: response.data.algorithm
         };
         localStorage.setItem('credentials', JSON.stringify(credentials));
-        //workerFactory.fetch()
       }
 
       function errorCallback(response) {
@@ -47,7 +46,7 @@ angular.module('app.controllers')
         console.log("logout");
         console.log(response);
         localStorage.setItem("credentials", "");
-        window.location = '#/login';
+        $state.go('login');
       }
 
       function errorCallback(response) {

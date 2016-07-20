@@ -3,64 +3,23 @@
  */
 angular.module('app.services')
 
-  .factory('workerFactory', ['RequestService', 'WorkerService', '$q', function (RequestService, WorkerService, $q) {
+  .factory('workerFactory', [function () {
     var workerList = [];
-    var deferred=$q.defer();
 
-    function fetch() {
-
-      function successCallback(response) {
-        console.log(response.data);
-        var ids = Object.keys(response.data);
-        for (var i = 0; i < ids.length; i++) {
-          var id = ids[i];
-          var name = response.data[id];
-          workerList[i] = {
-            name: name,
-            id: id,
-            master: id.indexOf("/") < 0,
-            status: "master"
-          }
-        }
-        setStatuses();
-        deferred.resolve();
-      }
-
-      function errorCallback(response) {
-        console.log("fail");
-        console.log(response.data);
-        deferred.reject();
-      }
-
-      RequestService.sendRequest(mainURL + "controller/addressbook", METHODS.GET, true, successCallback, errorCallback, null);
-
-      return deferred.promise;
-    }
-
-    function setStatuses() {
+    function setWorkerData(id, data) {
       for (var i = 0; i < workerList.length; i++) {
-        if (!workerList[i].master) {
-          WorkerService.status(workerList[i],
-            function (response) {
-              var id = response.data.result.id;
-              var status = response.data.result.currStatus.status;
-              setWorkerStatus(id, status)
-            },
-            function (response) {
-              console.log(resopnse)
-            })
-        }
-      }
-    }
-
-    function setWorkerStatus(id, status) {
-      for (var i = 0; i < workerList.length; i++) {
-        if (workerList[i].id.indexOf(id)>-1) {
-          workerList[i].status = status;
-          console.log(workerList[i].status)
+        if (workerList[i].id.indexOf(id) > -1) {
+          workerList[i].status = data.currStatus.status;
+          workerList[i].data = data;
+          console.log(workerList[i].status);
           return;
         }
       }
+
+    }
+
+    function addWorker(worker){
+      workerList[workerList.length]=worker;
     }
 
     return {
@@ -74,14 +33,14 @@ angular.module('app.services')
           }
         }
       },
-      fetch: fetch,
-      setWorkerStatus: setWorkerStatus
+      setWorkerData: setWorkerData,
+      addWorker: addWorker
     }
 
 
   }])
 
-  .service('WorkerService', ['RequestService', function (RequestService) {
+  .service('WorkerService', ['RequestService', 'workerFactory', function (RequestService, workerFactory) {
 
     var COMMAND_TYPE = {
       start: 'start',
@@ -98,26 +57,95 @@ angular.module('app.services')
           return "workercmd=" + this.workercmd + "&workeraddr=" + this.workeraddr;
         }
       };
-      RequestService.sendRequest(mainURL + "controller/workercmd", METHODS.POST, true, successCallback, errorCallback, params.getParams());
-    }
+      if (workercmd == COMMAND_TYPE.reload) {
+        function defSuccessCallback(response) {
+          var id = response.data.result.id;
+          var data = response.data.result;
+          workerFactory.setWorkerData(id, data);
+          successCallback(resopnse);
+        }
 
-    return {
-      start: function (worker, successCallback, errorCallback) {
-        cmd(worker, COMMAND_TYPE.start, successCallback, errorCallback)
-      },
-      stop: function (worker, successCallback, errorCallback) {
-        cmd(worker, COMMAND_TYPE.stop, successCallback, errorCallback)
-      },
-      reload: function (worker, successCallback, errorCallback) {
-        cmd(worker, COMMAND_TYPE.reload, successCallback, errorCallback)
-      },
-      status: function (worker, successCallback, errorCallback) {
-        cmd(worker, COMMAND_TYPE.status, successCallback, errorCallback)
-      },
-      cmd: function (worker, type, successCallback, errorCallback) {
-        cmd(worker, type, successCallback, errorCallback)
+        RequestService.sendRequest(mainURL + "controller/workercmd", METHODS.POST, true, defSuccessCallback, errorCallback, params.getParams());
+      } else {
+        RequestService.sendRequest(mainURL + "controller/workercmd", METHODS.POST, true, successCallback, errorCallback, params.getParams());
       }
     }
+
+    this.start = function (worker, successCallback, errorCallback) {
+      cmd(worker, COMMAND_TYPE.start, successCallback, errorCallback)
+    };
+    this.stop = function (worker, successCallback, errorCallback) {
+      cmd(worker, COMMAND_TYPE.stop, successCallback, errorCallback)
+    };
+    this.reload = function (worker, successCallback, errorCallback) {
+      cmd(worker, COMMAND_TYPE.reload, successCallback, errorCallback)
+    };
+    this.status = function (worker, successCallback, errorCallback) {
+      cmd(worker, COMMAND_TYPE.status, successCallback, errorCallback)
+    };
+    this.cmd = function (worker, type, successCallback, errorCallback) {
+      cmd(worker, type, successCallback, errorCallback)
+    };
+
+    function mockFetch() {
+
+      for (var i = 0; i < 10; i++) {
+        name = "worker " + i;
+        id = i % 9 ?  "/host - worker " + i:"host - worker " + i;
+        workerFactory.addWorker({
+          name: name,
+          id: id,
+          master: id.indexOf("/") < 0,
+          status: (i % 9) ?  ((i % 4) ? "working":"stopped") :"master",
+          data: {}
+
+        });
+      }
+    }
+
+    this.fetch=function(finallyCallback) {
+      function successCallback(response) {
+        console.log(response.data);
+        var ids = Object.keys(response.data);
+        for (var i = 0; i < ids.length; i++) {
+          var id = ids[i];
+          var name = response.data[id];
+          workerFactory.addWorker({
+            name: name,
+            id: id,
+            master: id.indexOf("/") < 0,
+            status: "master",
+            data: {}
+          });
+        }
+        setStatuses();
+      }
+
+      function errorCallback(response) {
+        console.log("fail");
+        console.log(response.data);
+      }
+
+      RequestService.sendRequest(mainURL + "controller/addressbook", METHODS.GET, true, successCallback, errorCallback, null, finallyCallback);
+      // mockFetch()
+    }
+
+    function setStatuses() {
+      var workerList=workerFactory.getWorkers()
+      for (var i = 0; i < workerList.length; i++) {
+        if (!workerList[i].master) {
+          status(workerList[i],
+            function (response) {
+              console.log(response)
+            },
+            function (response) {
+              console.log(response)
+            })
+        }
+      }
+    }
+
+
   }])
 
   .service('MasterService', ['RequestService', function (RequestService) {
@@ -135,7 +163,16 @@ angular.module('app.services')
           return "mastercmd=" + this.mastercmd + "&masteraddr=" + this.masteraddr;
         }
       };
-      RequestService.sendRequest(mainURL + "controller/mastercmd", METHODS.POST, true, successCallback, errorCallback, params.getParams());
+      if (mastercmd == COMMAND_TYPE.registry) {
+        function defSuccessCallback(response) {
+
+          successCallback(response);
+        }
+
+        RequestService.sendRequest(mainURL + "controller/mastercmd", METHODS.POST, true, defSuccessCallback, errorCallback, params.getParams());
+      } else {
+        RequestService.sendRequest(mainURL + "controller/mastercmd", METHODS.POST, true, successCallback, errorCallback, params.getParams());
+      }
     }
 
     return {

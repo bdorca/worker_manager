@@ -29,7 +29,7 @@ angular.module('app.services')
   }])
 
   .service('RequestService', ['$http', 'CredentialService', function ($http, CredentialService) {
-    function sendRequest(url, method, needCred, succesCallback, errorCallback, params) {
+    function sendRequest(url, method, needCred, succesCallback, errorCallback, params, finallyCallback) {
 
       if(params) {
         url += "?" + params;
@@ -45,7 +45,7 @@ angular.module('app.services')
         // requestOptions.params = CredentialService.hawkBewit(url);
       }
       console.log(requestOptions);
-      $http(requestOptions).then(succesCallback, errorCallback);
+      $http(requestOptions).then(succesCallback, errorCallback).finally(finallyCallback);
     }
 
     return {
