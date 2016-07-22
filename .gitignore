@@ -5,4 +5,5 @@ node_modules/
 platforms/
 plugins/
 .idea/
-/www/alma.js
+/www/bundle.js
+/www/dist/bundle.js
