@@ -57,7 +57,7 @@ angular.module('app.services')
           return "workercmd=" + this.workercmd + "&workeraddr=" + this.workeraddr;
         }
       };
-      if (workercmd == COMMAND_TYPE.reload) {
+      if (workercmd == COMMAND_TYPE.status) {
         function defSuccessCallback(response) {
           var id = response.data.result.id;
           var data = response.data.result;
