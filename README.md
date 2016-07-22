@@ -1,6 +1,6 @@
 # worker_manager
 
-<code>npm install corodva</code>
+<code>npm install corodva</code> </br>
 <code>npm install ionic</code>
 
 <code>ionic platform add browser</code>
