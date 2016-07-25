@@ -34,7 +34,10 @@ angular.module('app.services')
         }
       },
       setWorkerData: setWorkerData,
-      addWorker: addWorker
+      addWorker: addWorker,
+      clean:function (){
+        workerList=[]
+      }
     }
 
 
@@ -126,6 +129,7 @@ angular.module('app.services')
         console.log(response.data);
       }
 
+      workerFactory.clean();
       RequestService.sendRequest(mainURL + "controller/addressbook", METHODS.GET, true, successCallback, errorCallback, null, finallyCallback);
       // mockFetch()
     }
