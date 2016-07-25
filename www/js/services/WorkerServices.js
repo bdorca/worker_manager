@@ -36,7 +36,7 @@ angular.module('app.services')
       setWorkerData: setWorkerData,
       addWorker: addWorker,
       clean:function (){
-        workerList=[]
+        workerList.splice(0)
       }
     }
 
@@ -130,15 +130,15 @@ angular.module('app.services')
       }
 
       workerFactory.clean();
-      RequestService.sendRequest(mainURL + "controller/addressbook", METHODS.GET, true, successCallback, errorCallback, null, finallyCallback);
-      // mockFetch()
+      //RequestService.sendRequest(mainURL + "controller/addressbook", METHODS.GET, true, successCallback, errorCallback, null, finallyCallback);
+      mockFetch()
     }
 
     function setStatuses() {
       var workerList=workerFactory.getWorkers()
       for (var i = 0; i < workerList.length; i++) {
         if (!workerList[i].master) {
-          status(workerList[i],
+          cmd(workerList[i], COMMAND_TYPE.status,
             function (response) {
               console.log(response)
             },
