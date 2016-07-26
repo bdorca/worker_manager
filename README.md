@@ -2,6 +2,7 @@
 
 <code>npm install -g cordova</code> </br>
 <code>npm install -g ionic</code>
+<code>npm install -g gulp</code>
 
 <code>ionic platform add browser</code>
 (ionic platform add android, ionic platform add ios)
