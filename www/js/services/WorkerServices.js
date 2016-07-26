@@ -130,8 +130,8 @@ angular.module('app.services')
       }
 
       workerFactory.clean();
-      //RequestService.sendRequest(mainURL + "controller/addressbook", METHODS.GET, true, successCallback, errorCallback, null, finallyCallback);
-      mockFetch()
+      RequestService.sendRequest(mainURL + "controller/addressbook", METHODS.GET, true, successCallback, errorCallback, null, finallyCallback);
+      //mockFetch()
     }
 
     function setStatuses() {
