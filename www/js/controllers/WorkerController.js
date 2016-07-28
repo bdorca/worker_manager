@@ -4,7 +4,7 @@
 
 angular.module('app.controllers')
 
-  .controller('workersCtrl', ['$scope','WorkerService', 'workerFactory','$state',  function ($scope, WorkerService, workerFactory, $state) {
+  .controller('workersCtrl', ['$scope','WorkerService', 'workerFactory','$state', 'localeFactory',  function ($scope, WorkerService, workerFactory, $state, localeFactory) {
 
     $scope.workers = workerFactory.getWorkers();
 
@@ -27,5 +27,7 @@ angular.module('app.controllers')
       }
     }
 
+    $scope.getString=localeFactory.getString;
+    
   }]);
 

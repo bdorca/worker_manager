@@ -1,4 +1,4 @@
-<ion-view title="Login" id="login_page" class=" ">
+<ion-view title="{{getString('login')}}" id="login_page" class=" ">
   <ion-content padding="true" class="has-header">
     <div class="">
       <img src="img/X8kap0CvQaG3QBmnyQyQ_login_logo.png" width="50%" height="auto"
@@ -6,26 +6,31 @@
     </div>
     <div class="spacer" style="height: 40px;"></div>
 
-    <form id="login-form1" class="">
+    <form ng-submit="login()" id="login-form1" class="">
       <div class="list card">
         <label class="item item-input item-floating-label">
-          <span class="input-label">Customer</span>
-          <input type="text" placeholder="customer id" id="input_customer_id">
+          <span class="input-label">{{getString('customer')}}</span>
+          <input type="text" placeholder="{{getString('customer')}}" id="input_customer_id">
         </label>
         <ion-list id="login-list1">
           <label class="item item-input item-floating-label">
-            <span class="input-label">Username</span>
-            <input type="text" placeholder="username" id="input_user_id" >
+            <span class="input-label">{{getString('username')}}</span>
+            <input type="text" placeholder="{{getString('username')}}" id="input_user_id">
           </label>
           <label class="item item-input item-floating-label">
-            <span class="input-label">Password</span>
-            <input type="password" placeholder="password" id="input_password" >
+            <span class="input-label">{{getString('password')}}</span>
+            <input type="password" placeholder="{{getString('password')}}" id="input_password">
           </label>
         </ion-list>
       </div>
-      <div class="spacer" style="height: 40px;"></div>
       <input type="submit" on-touch="login()" id="login-button1" class=" button button-positive  button-block "
              value="Login"/>
     </form>
+    <label class="item item-input item-select">
+      <i class="item-icon-left ion-earth input-label"></i>
+      <select class="item " title="Language" id="language_select" ng-model="language"
+              ng-options="language as language for language in languages" ng-change="setLanguage(language)">
+      </select>
+    </label>
   </ion-content>
 </ion-view>

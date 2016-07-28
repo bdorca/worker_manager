@@ -4,7 +4,7 @@
 
 angular.module('app.controllers')
 
-  .controller('detailsCtrl', ['$scope', '$stateParams', '$ionicPopover', 'workerFactory', 'commandFactory', 'WorkerService', function ($scope, $stateParams, $ionicPopover, workerFactory, commandFactory, WorkerService) {
+  .controller('detailsCtrl', ['$scope', '$stateParams', '$ionicPopover', 'workerFactory', 'commandFactory', 'WorkerService', 'localeFactory', function ($scope, $stateParams, $ionicPopover, workerFactory, commandFactory, WorkerService, localeFatory) {
 
     $scope.selectedWorker = workerFactory.getWorker($stateParams.workerId);
     $scope.commands = commandFactory.getWorkerCommands();
@@ -35,8 +35,10 @@ angular.module('app.controllers')
       popover.show();
     });
 
+    $scope.getString=localeFactory.getString;
+
   }])
-  .controller('masterdetailsCtrl', ['$scope', '$stateParams', '$ionicPopover', 'workerFactory', 'commandFactory', 'MasterService', function ($scope, $stateParams, $ionicPopover, workerFactory, commandFactory, MasterService) {
+  .controller('masterdetailsCtrl', ['$scope', '$stateParams', '$ionicPopover', 'workerFactory', 'commandFactory', 'MasterService','localeFactory', function ($scope, $stateParams, $ionicPopover, workerFactory, commandFactory, MasterService,localeFactory) {
 
     $scope.selectedWorker = workerFactory.getWorker($stateParams.workerId);
     $scope.commands = commandFactory.getMasterCommands();
@@ -65,6 +67,8 @@ angular.module('app.controllers')
       $scope.popover = popover;
       popover.show();
     });
+
+    $scope.getString=localeFactory.getString;
 
   }])
 ;

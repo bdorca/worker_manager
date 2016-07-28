@@ -130,12 +130,12 @@ angular.module('app.services')
       }
 
       workerFactory.clean();
-      RequestService.sendRequest(mainURL + "controller/addressbook", METHODS.GET, true, successCallback, errorCallback, null, finallyCallback);
+       RequestService.sendRequest(mainURL + "controller/addressbook", METHODS.GET, true, successCallback, errorCallback, null, finallyCallback);
       //mockFetch()
-    }
+    };
 
     function setStatuses() {
-      var workerList=workerFactory.getWorkers()
+      var workerList=workerFactory.getWorkers();
       for (var i = 0; i < workerList.length; i++) {
         if (!workerList[i].master) {
           cmd(workerList[i], COMMAND_TYPE.status,

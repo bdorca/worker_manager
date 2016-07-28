@@ -2,7 +2,7 @@
   <ion-content scroll="false">
     <ion-list id=command-list" class="list">
       <ion-item class="item" ng-repeat='command in commands' on-touch="cmd('{{command.name}}');" style="width: auto">
-        <div style="text-transform: capitalize;">{{command.name}}</div>
+        <div style="text-transform: capitalize;">{{getString(command.name)}}</div>
       </ion-item>
     </ion-list>
   </ion-content>

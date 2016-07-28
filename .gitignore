@@ -7,3 +7,4 @@ plugins/
 .idea/
 /www/bundle.js
 /www/dist/bundle.js
+npm-debug.log

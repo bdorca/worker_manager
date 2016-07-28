@@ -4,7 +4,7 @@
 
 angular.module('app.controllers')
 
-  .controller('loginCtrl', ['$scope', '$ionicPopup', '$state', 'RequestService', function ($scope, $ionicPopup, $state, RequestService) {
+  .controller('loginCtrl', ['$scope', '$ionicPopup', '$state', 'RequestService', 'localeFactory', function ($scope, $ionicPopup, $state, RequestService, localeFactory) {
 
     $scope.login = function () {
       var customer = document.getElementById('input_customer_id').value;
@@ -68,5 +68,13 @@ angular.module('app.controllers')
       });
     }
 
+    $scope.getString = localeFactory.getString;
+    $scope.languages = localeFactory.getLanguages();
+    $scope.language=$scope.languages[0];
+    $scope.setLanguage =function(l) {
+      localeFactory.setLanguage(l);
+    }
+    
+    
   }]);
 

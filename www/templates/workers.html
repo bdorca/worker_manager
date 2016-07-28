@@ -1,4 +1,4 @@
-<ion-view title="Workers" id="workers_page" class=" ">
+<ion-view title="{{getString('workers')}}" id="workers_page" class=" ">
   <ion-nav-bar class="bar-positive">
     <ion-nav-back-button hide-nav-bar="true"></ion-nav-back-button>
     <ion-nav-buttons side="left">
@@ -14,7 +14,7 @@
     <ion-refresher pulling-text="Pull to refresh..." on-refresh="refresh()">
     </ion-refresher>
     <ion-list id="workers-list" class=" ">
-      <ion-item class="card" ng-repeat='worker in workers' on-touch="toDetails(worker)">
+      <ion-item class="item" ng-repeat='worker in workers' on-touch="toDetails(worker)">
         <!--ui-sref="menu.details({'workerId': '{{worker.id}}'})"> -->
         <p class="item-icon-right"><i ng-class="{'icon ion-checkmark': worker.status=='working',
                       'icon ion-star': worker.status=='master',
