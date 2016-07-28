@@ -10,7 +10,7 @@
       <div class="list card">
         <label class="item item-input item-floating-label">
           <span class="input-label">{{getString('customer')}}</span>
-          <input type="text" placeholder="{{getString('customer')}}" id="input_customer_id">
+          <input type="number" placeholder="{{getString('customer')}}" id="input_customer_id">
         </label>
         <ion-list id="login-list1">
           <label class="item item-input item-floating-label">
@@ -24,7 +24,7 @@
         </ion-list>
       </div>
       <input type="submit" on-touch="login()" id="login-button1" class=" button button-positive  button-block "
-             value="Login"/>
+             value="{{getString('login')}}"/>
     </form>
     <label class="item item-input item-select">
       <i class="item-icon-left ion-earth input-label"></i>
