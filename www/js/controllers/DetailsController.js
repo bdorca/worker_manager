@@ -4,7 +4,7 @@
 
 angular.module('app.controllers')
 
-  .controller('detailsCtrl', ['$scope', '$stateParams', '$ionicPopover', 'workerFactory', 'commandFactory', 'WorkerService', 'localeFactory', function ($scope, $stateParams, $ionicPopover, workerFactory, commandFactory, WorkerService, localeFatory) {
+  .controller('detailsCtrl', ['$scope', '$stateParams', '$ionicPopover', 'workerFactory', 'commandFactory', 'WorkerService', 'localeFactory', function ($scope, $stateParams, $ionicPopover, workerFactory, commandFactory, WorkerService, localeFactory) {
 
     $scope.selectedWorker = workerFactory.getWorker($stateParams.workerId);
     $scope.commands = commandFactory.getWorkerCommands();

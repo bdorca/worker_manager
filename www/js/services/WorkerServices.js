@@ -65,7 +65,7 @@ angular.module('app.services')
           var id = response.data.result.id;
           var data = response.data.result;
           workerFactory.setWorkerData(id, data);
-          successCallback(resopnse);
+          // successCallback(response);
         }
 
         RequestService.sendRequest(mainURL + "controller/workercmd", METHODS.POST, true, defSuccessCallback, errorCallback, params.getParams());
