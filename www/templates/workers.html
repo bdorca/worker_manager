@@ -14,13 +14,23 @@
     <ion-refresher pulling-text="Pull to refresh..." on-refresh="refresh()">
     </ion-refresher>
     <ion-list id="workers-list" class=" ">
-      <ion-item class="item" ng-repeat='worker in workers' on-tap="toDetails(worker)">
-        <!--ui-sref="menu.details({'workerId': '{{worker.id}}'})"> -->
-        <p class="item-icon-right"><i ng-class="{'icon ion-checkmark': worker.status=='working',
-                      'icon ion-star': worker.status=='master',
+      <ion-item class="item" ng-repeat='master in masters'>
+        <ion-item class="item-stable"
+                  ng-click="toggleGroup(master)"
+                  ng-class="{active: isGroupShown(master)}">
+          <p class="item-icon-right"> <i class="icon" ng-class="isGroupShown(master) ? 'ion-minus' : 'ion-plus'"></i></p>
+          <p><b>{{master.name}}</b></p>
+          <p style="word-wrap: break-word;">{{master.id}}</p>
+          <p>{{master.running()}} / {{master.workerNum()}}</p>
+        </ion-item>
+        <ion-item class="item-accordion"
+                  ng-repeat="worker in master.workers"
+                  ng-show="isGroupShown(master)"
+                  on-tap="toDetails(worker)">
+          <p class="item-icon-right"><i ng-class="{'icon ion-checkmark': worker.status=='working',
                       'icon ion-close': worker.status=='stopped'}"></i></p>
-        <p><b>{{worker.name}}</b></p>
-        <p style="word-wrap: break-word;">{{worker.id}}</p>
+          <p style="word-wrap: break-word;">{{worker.workerId}}</p>
+        </ion-item>
       </ion-item>
     </ion-list>
   </ion-content>

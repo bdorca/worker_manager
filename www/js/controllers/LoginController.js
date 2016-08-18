@@ -66,7 +66,7 @@ angular.module('app.controllers')
       alertPopup.then(function (res) {
         console.log('alerted');
       });
-    }
+    };
 
     $scope.getString = localeFactory.getString;
     $scope.languages = localeFactory.getLanguages();

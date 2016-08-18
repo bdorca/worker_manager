@@ -1,49 +1,101 @@
 /**
  * Created by dorkab on 2016.07.18..
  */
+function Master(id) {
+  this.id = id;
+  this.name = id;
+  this.status = "master";
+  this.master = true;
+  this.data = {};
+  this.workers = [];
+  this.running = function () {
+    var count = 0;
+    for (var i = 0; i < this.workers.length; i++) {
+      if (this.workers[i].status == "working") {
+        count++
+      }
+    }
+    return count
+  };
+  this.workerNum = function () {
+    return this.workers.length;
+  };
+
+  this.show = false;
+}
+
+function Worker(id, name) {
+  this.id = id;
+  this.name = name;
+  this.status = "working";
+  this.master = false;
+  this.data = {};
+  this.workerId=id.substring(id.indexOf("/")+1);
+  this.masterId=id.substring(0,id.indexOf("/"));
+}
+
 angular.module('app.services')
 
   .factory('workerFactory', [function () {
-    var workerList = [];
+    var masterList = [];
 
-    function setWorkerData(id, data) {
-      for (var i = 0; i < workerList.length; i++) {
-        if (workerList[i].id.indexOf(id) > -1) {
-          workerList[i].status = data.currStatus.status;
-          workerList[i].data = data;
-          console.log(workerList[i].status);
-          return;
+    function setWorkerData(id, masterId, data) {
+      for (var i = 0; i < masterList.length; i++) {
+        if (masterList[i].id == masterId) {
+          for (var j = 0; j < masterList[i].workers.length; j++) {
+            if (masterList[i].workers[j].workerId == id) {
+              masterList[i].workers[j].status = data.currStatus.status;
+              masterList[i].workers[j].data = data;
+              return;
+            }
+          }
         }
       }
 
     }
 
-    function addWorker(worker){
-      workerList[workerList.length]=worker;
+    function addWorker(worker) {
+      for (var i = 0; i < masterList.length; i++) {
+        if (worker.masterId==masterList[i].id) {
+          if(masterList[i].workers.length==0){
+            masterList[i].name =worker.name
+          }
+          masterList[i].workers.push(worker);
+        }
+      }
+    }
+
+    function addMaster(master) {
+      masterList.push(master)
     }
 
     return {
-      getWorkers: function () {
-        return workerList;
+      getMasters: function () {
+        return masterList;
       },
       getWorker: function (workerId) {
-        for (var i = 0; i < workerList.length; i++) {
-          if (workerList[i].id === workerId) {
-            return workerList[i];
+        for (var i = 0; i < masterList.length; i++) {
+          if (workerId.startsWith(masterList[i].id)) {
+            for (var j = 0; j < masterList[i].workers.length; j++) {
+              if (masterList[i].workers[j].id == workerId) {
+                return masterList[i].workers[j];
+              }
+            }
           }
         }
       },
       setWorkerData: setWorkerData,
       addWorker: addWorker,
-      clean:function (){
-        workerList.splice(0)
+      addMaster: addMaster,
+      clean: function () {
+        masterList.splice(0)
       }
     }
 
 
   }])
 
-  .service('WorkerService', ['RequestService', 'workerFactory', function (RequestService, workerFactory) {
+  .service('WorkerService', ['RequestService', 'workerFactory', 'MasterService', function (RequestService, workerFactory, MasterService) {
 
     var COMMAND_TYPE = {
       start: 'start',
@@ -62,11 +114,11 @@ angular.module('app.services')
       };
       if (workercmd == COMMAND_TYPE.status) {
         function defSuccessCallback(response) {
-          console.log(response)
-          if(!("err" in response.data)){
+          if (!("err" in response.data)) {
             var id = response.data.result.id;
+            var masterId = response.data.result.masterId;
             var data = response.data.result;
-            workerFactory.setWorkerData(id, data);
+            workerFactory.setWorkerData(id, masterId, data);
 
           }
           successCallback(response);
@@ -98,48 +150,50 @@ angular.module('app.services')
 
       for (var i = 0; i < 10; i++) {
         name = "worker " + i;
-        id = i % 9 ?  "/host - worker " + i:"host - worker " + i;
+        id = i % 9 ? "/host - worker " + i : "host - worker " + i;
         workerFactory.addWorker({
           name: name,
           id: id,
           master: id.indexOf("/") < 0,
-          status: (i % 9) ?  ((i % 4) ? "working":"stopped") :"master",
+          status: (i % 9) ? ((i % 4) ? "working" : "stopped") : "master",
           data: {}
 
         });
       }
     }
 
-    this.fetch=function(finallyCallback, errorCallback) {
+    this.fetch = function (finallyCallback, errorCallback) {
       function successCallback(response) {
         console.log(response.data);
         var ids = Object.keys(response.data);
         for (var i = 0; i < ids.length; i++) {
           var id = ids[i];
           var name = response.data[id];
-          workerFactory.addWorker({
-            name: name,
-            id: id,
-            master: id.indexOf("/") < 0,
-            status: "master",
-            data: {}
-          });
+          if (id.indexOf("/") < 0) {
+            workerFactory.addMaster(new Master(id))
+          } else {
+            workerFactory.addWorker(new Worker(id, name));
+          }
         }
         setStatuses();
       }
 
       workerFactory.clean();
-       RequestService.sendRequest(mainURL + "controller/addressbook", METHODS.GET, true, successCallback, errorCallback, null, finallyCallback);
+      RequestService.sendRequest(mainURL + "controller/addressbook", METHODS.GET, true, successCallback, errorCallback, null, finallyCallback);
       //mockFetch()
     };
 
     function setStatuses() {
-      var workerList=workerFactory.getWorkers();
-      for (var i = 0; i < workerList.length; i++) {
-        if (!workerList[i].master) {
-          cmd(workerList[i], COMMAND_TYPE.status,
+      var masterList = workerFactory.getMasters();
+      for (var i = 0; i < masterList.length; i++) {
+        MasterService.registry(masterList[i], function (response) {
+          },
+          function (response) {
+            console.log(response)
+          });
+        for (var j = 0; j < masterList[i].workers.length; j++) {
+          cmd(masterList[i].workers[j], COMMAND_TYPE.status,
             function (response) {
-              console.log(response)
             },
             function (response) {
               console.log(response)
@@ -168,8 +222,8 @@ angular.module('app.services')
       };
       if (mastercmd == COMMAND_TYPE.registry) {
         function defSuccessCallback(response) {
-          if(!("err" in response.data)){
-            worker.data=response.data.localReg.master;
+          if (!("err" in response.data)) {
+            worker.data = response.data.localReg.master;
           }
           successCallback(response);
         }

@@ -44,7 +44,7 @@ angular.module('app.services')
         requestOptions.headers.Authorization = CredentialService.hawkHeader(url, method);
         // requestOptions.params = CredentialService.hawkBewit(url);
       }
-      console.log(requestOptions);
+      // console.log(requestOptions);
       $http(requestOptions).then(succesCallback, errorCallback).finally(finallyCallback);
     }
 

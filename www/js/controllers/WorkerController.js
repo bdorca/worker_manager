@@ -6,7 +6,7 @@ angular.module('app.controllers')
 
   .controller('workersCtrl', ['$scope','WorkerService', 'workerFactory','$state', 'localeFactory', '$ionicPopup',  function ($scope, WorkerService, workerFactory, $state, localeFactory, $ionicPopup) {
 
-    $scope.workers = workerFactory.getWorkers();
+    $scope.masters = workerFactory.getMasters();
 
     $scope.selected = function (id) {
       console.log(id)
@@ -30,9 +30,16 @@ angular.module('app.controllers')
       }else{
         $state.go('menu.details',{"workerId": worker.id})
       }
-    }
+    };
 
     $scope.getString=localeFactory.getString;
+
+    $scope.toggleGroup = function(group) {
+      group.show = !group.show;
+    };
+    $scope.isGroupShown = function(group) {
+      return group.show;
+    };
 
   }]);
 
