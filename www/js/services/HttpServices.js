@@ -11,7 +11,7 @@ angular.module('app.services')
     return {
       hawkHeader: function (url, method) {
         var credentials = JSON.parse(localStorage.getItem("credentials"));
-        var header = Hawk.client.header(url, method, {
+        var header = Hawk.client.header(url.replace("/v0.2/","/"), method, { //.replace("/v2.0/","/")
           credentials: credentials
         });
         return header.field;

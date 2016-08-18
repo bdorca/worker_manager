@@ -28,7 +28,9 @@ angular.module('app.services')
       "registry": "Registry",
       "shutdown": "Shutdown",
       "logout": "Logout",
-      "login":"Login"
+      "login":"Login",
+      "connection error title":"Connection error",
+      "connecrion error":"Check your internet connection"
     };
 
     var hun = {
@@ -46,7 +48,9 @@ angular.module('app.services')
       "registry": "Registry",
       "shutdown": "Leállítás",
       "logout": "Kijelentkezés",
-      "login":"Bejelentkezés"
+      "login":"Bejelentkezés",
+      "connection error title":"Kapcsolódási probléma",
+      "connection error":"Ellenőrizze a hozzáférést"
     };
 
     function getString(id) {

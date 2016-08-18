@@ -62,10 +62,14 @@ angular.module('app.services')
       };
       if (workercmd == COMMAND_TYPE.status) {
         function defSuccessCallback(response) {
-          var id = response.data.result.id;
-          var data = response.data.result;
-          workerFactory.setWorkerData(id, data);
-          // successCallback(response);
+          console.log(response)
+          if(!("err" in response.data)){
+            var id = response.data.result.id;
+            var data = response.data.result;
+            workerFactory.setWorkerData(id, data);
+
+          }
+          successCallback(response);
         }
 
         RequestService.sendRequest(mainURL + "controller/workercmd", METHODS.POST, true, defSuccessCallback, errorCallback, params.getParams());
@@ -106,7 +110,7 @@ angular.module('app.services')
       }
     }
 
-    this.fetch=function(finallyCallback) {
+    this.fetch=function(finallyCallback, errorCallback) {
       function successCallback(response) {
         console.log(response.data);
         var ids = Object.keys(response.data);
@@ -122,11 +126,6 @@ angular.module('app.services')
           });
         }
         setStatuses();
-      }
-
-      function errorCallback(response) {
-        console.log("fail");
-        console.log(response.data);
       }
 
       workerFactory.clean();
@@ -169,7 +168,9 @@ angular.module('app.services')
       };
       if (mastercmd == COMMAND_TYPE.registry) {
         function defSuccessCallback(response) {
-
+          if(!("err" in response.data)){
+            worker.data=response.data.localReg.master;
+          }
           successCallback(response);
         }
 

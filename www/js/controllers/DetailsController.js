@@ -4,7 +4,7 @@
 
 angular.module('app.controllers')
 
-  .controller('detailsCtrl', ['$scope', '$stateParams', '$ionicPopover', 'workerFactory', 'commandFactory', 'WorkerService', 'localeFactory', function ($scope, $stateParams, $ionicPopover, workerFactory, commandFactory, WorkerService, localeFactory) {
+  .controller('detailsCtrl', ['$scope', '$stateParams', '$ionicPopover', '$ionicPopup', 'workerFactory', 'commandFactory', 'WorkerService', 'localeFactory', function ($scope, $stateParams, $ionicPopover, $ionicPopup, workerFactory, commandFactory, WorkerService, localeFactory) {
 
     $scope.selectedWorker = workerFactory.getWorker($stateParams.workerId);
     $scope.commands = commandFactory.getWorkerCommands();
@@ -12,13 +12,23 @@ angular.module('app.controllers')
 
     function successCallback(response) {
       console.log(response);
-      document.getElementById("worker_status").innerHTML = JSON.stringify(response.data);
+      if("err" in response.data){
+        alertCallback(response.data.errMsg)
+      }
       $scope.popover.hide();
     }
 
     function errorCallback(response) {
       console.log(response);
       $scope.popover.hide();
+      alertCallback()
+    }
+
+    function alertCallback(message){
+      var alertPopup=$ionicPopup.alert({
+        title: localeFactory.getString("connection error title"),
+        template: message?message:localeFactory.getString("connection error")
+      });
     }
 
     WorkerService.status($scope.selectedWorker, successCallback, errorCallback);
@@ -38,20 +48,30 @@ angular.module('app.controllers')
     $scope.getString=localeFactory.getString;
 
   }])
-  .controller('masterdetailsCtrl', ['$scope', '$stateParams', '$ionicPopover', 'workerFactory', 'commandFactory', 'MasterService','localeFactory', function ($scope, $stateParams, $ionicPopover, workerFactory, commandFactory, MasterService,localeFactory) {
+  .controller('masterdetailsCtrl', ['$scope', '$stateParams', '$ionicPopover', '$ionicPopup', 'workerFactory', 'commandFactory', 'MasterService','localeFactory', function ($scope, $stateParams, $ionicPopover, $ionicPopup, workerFactory, commandFactory, MasterService,localeFactory) {
 
     $scope.selectedWorker = workerFactory.getWorker($stateParams.workerId);
     $scope.commands = commandFactory.getMasterCommands();
 
     function successCallback(response) {
       console.log(response);
-      document.getElementById("master_status").innerHTML = JSON.stringify(response.data);
+      if("err" in response.data){
+        alertCallback(response.data.errMsg)
+      }
       $scope.popover.hide();
     }
 
     function errorCallback(response) {
       console.log(response);
       $scope.popover.hide();
+      alertCallback(response.message);
+    }
+
+    function alertCallback(message){
+      var alertPopup=$ionicPopup.alert({
+        title: localeFactory.getString("connection error title"),
+        template: message?message:localeFactory.getString("connection error")
+      });
     }
 
     MasterService.registry($scope.selectedWorker, successCallback, errorCallback);

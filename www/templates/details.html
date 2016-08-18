@@ -5,13 +5,13 @@
       <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
     </ion-nav-buttons>
     <ion-nav-buttons side="right">
-      <button class="button button-icon button-clear ion-more" id="btn_refresh_workers" on-touch="popover.show($event)"></button>
+      <button class="button button-icon button-clear ion-more" id="btn_refresh_workers" on-tap="popover.show($event)"></button>
     </ion-nav-buttons>
   </ion-nav-bar>
 
   <ion-content padding="true" class="has-header">
     <h2>{{selectedWorker.name}}</h2>
-    <div id="worker_status"></div>
+    <div id="worker_status">{{selectedWorker.data}}</div>
 
   </ion-content>
 </ion-view>

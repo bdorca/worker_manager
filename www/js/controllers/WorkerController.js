@@ -4,7 +4,7 @@
 
 angular.module('app.controllers')
 
-  .controller('workersCtrl', ['$scope','WorkerService', 'workerFactory','$state', 'localeFactory',  function ($scope, WorkerService, workerFactory, $state, localeFactory) {
+  .controller('workersCtrl', ['$scope','WorkerService', 'workerFactory','$state', 'localeFactory', '$ionicPopup',  function ($scope, WorkerService, workerFactory, $state, localeFactory, $ionicPopup) {
 
     $scope.workers = workerFactory.getWorkers();
 
@@ -16,6 +16,11 @@ angular.module('app.controllers')
       WorkerService.fetch(function() {
         // Stop the ion-refresher from spinning
         $scope.$broadcast('scroll.refreshComplete');
+      }, function(response){
+        var alertPopup=$ionicPopup.alert({
+          title: localeFactory.getString("connection error title"),
+          template: localeFactory.getString("connection error")
+        });
       });
     };
 
@@ -28,6 +33,6 @@ angular.module('app.controllers')
     }
 
     $scope.getString=localeFactory.getString;
-    
+
   }]);
 
