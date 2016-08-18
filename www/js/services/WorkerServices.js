@@ -46,6 +46,7 @@ angular.module('app.services')
             if (masterList[i].workers[j].workerId == id) {
               masterList[i].workers[j].status = data.currStatus.status;
               masterList[i].workers[j].data = data;
+              masterList[i].workers[j].data.currStatus = JSON.stringify(data.currStatus);
               return;
             }
           }
