@@ -23,14 +23,15 @@ angular.module('app.services')
       'master details':"Master Details",
       "start": "Start",
       "stop": "Stop",
-      "reload": "Reload",
+      "reload": "Restart",
       "status": "Status",
       "registry": "Registry",
       "shutdown": "Shutdown",
       "logout": "Logout",
       "login":"Login",
       "connection error title":"Connection error",
-      "connecrion error":"Check your internet connection"
+      "connecrion error":"Check your internet connection",
+      "pull to": "Pull to refresh..."
     };
 
     var hun = {
@@ -43,14 +44,15 @@ angular.module('app.services')
       'master details':"Master Részletek",
       "start": "Indítás",
       "stop": "Megállítás",
-      "reload": "Újratöltés",
+      "reload": "Újraindítás",
       "status": "Státusz",
       "registry": "Registry",
       "shutdown": "Leállítás",
       "logout": "Kijelentkezés",
       "login":"Bejelentkezés",
       "connection error title":"Kapcsolódási probléma",
-      "connection error":"Ellenőrizze a hozzáférést"
+      "connection error":"Ellenőrizze a hozzáférést",
+      "pull to": "Frissítéshez húzza le"
     };
 
     function getString(id) {

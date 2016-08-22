@@ -11,7 +11,7 @@
   </ion-nav-bar>
 
   <ion-content padding="true" class="has-header">
-    <ion-refresher pulling-text="Pull to refresh..." on-refresh="refresh()">
+    <ion-refresher pulling-text="{{getString('pull to')}}" on-refresh="refresh()">
     </ion-refresher>
     <ion-list id="workers-list" class=" ">
       <ion-item class="item" ng-repeat='master in masters'>

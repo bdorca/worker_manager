@@ -30,8 +30,8 @@ function Worker(id, name) {
   this.status = "working";
   this.master = false;
   this.data = {};
-  this.workerId=id.substring(id.indexOf("/")+1);
-  this.masterId=id.substring(0,id.indexOf("/"));
+  this.workerId = id.substring(id.indexOf("/") + 1);
+  this.masterId = id.substring(0, id.indexOf("/"));
 }
 
 angular.module('app.services')
@@ -44,9 +44,9 @@ angular.module('app.services')
         if (masterList[i].id == masterId) {
           for (var j = 0; j < masterList[i].workers.length; j++) {
             if (masterList[i].workers[j].workerId == id) {
-              masterList[i].workers[j].status = data.currStatus.status;
+              masterList[i].workers[j].status = data.status;
               masterList[i].workers[j].data = data;
-              masterList[i].workers[j].data.currStatus = JSON.stringify(data.currStatus);
+              // masterList[i].workers[j].data.currStatus = JSON.stringify(data.currStatus);
               return;
             }
           }
@@ -57,9 +57,9 @@ angular.module('app.services')
 
     function addWorker(worker) {
       for (var i = 0; i < masterList.length; i++) {
-        if (worker.masterId==masterList[i].id) {
-          if(masterList[i].workers.length==0){
-            masterList[i].name =worker.name
+        if (worker.masterId == masterList[i].id) {
+          if (masterList[i].workers.length == 0) {
+            masterList[i].name = worker.name
           }
           masterList[i].workers.push(worker);
         }
@@ -105,7 +105,7 @@ angular.module('app.services')
       status: 'status'
     };
 
-    function cmd(worker, workercmd, successCallback, errorCallback) {
+    function cmd(worker, workercmd, successCallback, errorCallback, finallyCallback) {
       params = {
         workercmd: workercmd,
         workeraddr: worker.id,
@@ -119,32 +119,36 @@ angular.module('app.services')
             var id = response.data.result.id;
             var masterId = response.data.result.masterId;
             var data = response.data.result;
+            for(var attr in response.data.result.currStatus){
+              data[attr]=response.data.result.currStatus[attr]
+            }
+            delete data["currStatus"];
             workerFactory.setWorkerData(id, masterId, data);
 
           }
           successCallback(response);
         }
 
-        RequestService.sendRequest(mainURL + "controller/workercmd", METHODS.POST, true, defSuccessCallback, errorCallback, params.getParams());
+        RequestService.sendRequest(mainURL + "controller/workercmd", METHODS.POST, true, defSuccessCallback, errorCallback, params.getParams(),finallyCallback);
       } else {
-        RequestService.sendRequest(mainURL + "controller/workercmd", METHODS.POST, true, successCallback, errorCallback, params.getParams());
+        RequestService.sendRequest(mainURL + "controller/workercmd", METHODS.POST, true, successCallback, errorCallback, params.getParams(),finallyCallback);
       }
     }
 
-    this.start = function (worker, successCallback, errorCallback) {
-      cmd(worker, COMMAND_TYPE.start, successCallback, errorCallback)
+    this.start = function (worker, successCallback, errorCallback,finallyCallback) {
+      cmd(worker, COMMAND_TYPE.start, successCallback, errorCallback,finallyCallback)
     };
-    this.stop = function (worker, successCallback, errorCallback) {
-      cmd(worker, COMMAND_TYPE.stop, successCallback, errorCallback)
+    this.stop = function (worker, successCallback, errorCallback, finallyCallback) {
+      cmd(worker, COMMAND_TYPE.stop, successCallback, errorCallback, finallyCallback)
     };
-    this.reload = function (worker, successCallback, errorCallback) {
-      cmd(worker, COMMAND_TYPE.reload, successCallback, errorCallback)
+    this.reload = function (worker, successCallback, errorCallback, finallyCallback) {
+      cmd(worker, COMMAND_TYPE.reload, successCallback, errorCallback, finallyCallback)
     };
-    this.status = function (worker, successCallback, errorCallback) {
-      cmd(worker, COMMAND_TYPE.status, successCallback, errorCallback)
+    this.status = function (worker, successCallback, errorCallback, finallyCallback) {
+      cmd(worker, COMMAND_TYPE.status, successCallback, errorCallback, finallyCallback)
     };
-    this.cmd = function (worker, type, successCallback, errorCallback) {
-      cmd(worker, type, successCallback, errorCallback)
+    this.cmd = function (worker, type, successCallback, errorCallback, finallyCallback) {
+      cmd(worker, type, successCallback, errorCallback, finallyCallback)
     };
 
     function mockFetch() {
@@ -188,21 +192,38 @@ angular.module('app.services')
       var masterList = workerFactory.getMasters();
       for (var i = 0; i < masterList.length; i++) {
         MasterService.registry(masterList[i], function (response) {
+            console.log(response);
+            if (!("err" in response.data)) {
+              var workers = response.data.localReg.workers;
+
+              for (wid in workers) {
+                worker=workers[wid];
+
+                var id = worker.id;
+                var masterId = worker.masterId;
+                var data = worker;
+                for(var attr in worker.currStatus){
+                  data[attr]=worker.currStatus[attr]
+                }
+                delete data["currStatus"];
+                workerFactory.setWorkerData(id, masterId, data);
+
+              }
+            }
           },
           function (response) {
             console.log(response)
           });
-        for (var j = 0; j < masterList[i].workers.length; j++) {
-          cmd(masterList[i].workers[j], COMMAND_TYPE.status,
-            function (response) {
-            },
-            function (response) {
-              console.log(response)
-            })
-        }
+        // for (var j = 0; j < masterList[i].workers.length; j++) {
+        //   cmd(masterList[i].workers[j], COMMAND_TYPE.status,
+        //     function (response) {
+        //     },
+        //     function (response) {
+        //       console.log(response)
+        //     })
+        // }
       }
     }
-
 
   }])
 

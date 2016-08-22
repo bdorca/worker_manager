@@ -12,7 +12,7 @@ angular.module('app.controllers')
 
     function successCallback(response) {
       console.log(response);
-      if("err" in response.data){
+      if ("err" in response.data) {
         alertCallback(response.data.errMsg)
       }
       $scope.popover.hide();
@@ -24,10 +24,10 @@ angular.module('app.controllers')
       alertCallback()
     }
 
-    function alertCallback(message){
-      var alertPopup=$ionicPopup.alert({
+    function alertCallback(message) {
+      var alertPopup = $ionicPopup.alert({
         title: localeFactory.getString("connection error title"),
-        template: message?message:localeFactory.getString("connection error")
+        template: message ? message : localeFactory.getString("connection error")
       });
     }
 
@@ -45,17 +45,23 @@ angular.module('app.controllers')
       popover.show();
     });
 
-    $scope.getString=localeFactory.getString;
+    $scope.refresh = function () {
+      WorkerService.status($scope.selectedWorker, successCallback, errorCallback, function () {
+        $scope.$broadcast('scroll.refreshComplete');
+      })
+    };
+
+    $scope.getString = localeFactory.getString;
 
   }])
-  .controller('masterdetailsCtrl', ['$scope', '$stateParams', '$ionicPopover', '$ionicPopup', 'workerFactory', 'commandFactory', 'MasterService','localeFactory', function ($scope, $stateParams, $ionicPopover, $ionicPopup, workerFactory, commandFactory, MasterService,localeFactory) {
+  .controller('masterdetailsCtrl', ['$scope', '$stateParams', '$ionicPopover', '$ionicPopup', 'workerFactory', 'commandFactory', 'MasterService', 'localeFactory', function ($scope, $stateParams, $ionicPopover, $ionicPopup, workerFactory, commandFactory, MasterService, localeFactory) {
 
     $scope.selectedWorker = workerFactory.getWorker($stateParams.workerId);
     $scope.commands = commandFactory.getMasterCommands();
 
     function successCallback(response) {
       console.log(response);
-      if("err" in response.data){
+      if ("err" in response.data) {
         alertCallback(response.data.errMsg)
       }
       $scope.popover.hide();
@@ -67,10 +73,10 @@ angular.module('app.controllers')
       alertCallback(response.message);
     }
 
-    function alertCallback(message){
-      var alertPopup=$ionicPopup.alert({
+    function alertCallback(message) {
+      var alertPopup = $ionicPopup.alert({
         title: localeFactory.getString("connection error title"),
-        template: message?message:localeFactory.getString("connection error")
+        template: message ? message : localeFactory.getString("connection error")
       });
     }
 
@@ -88,7 +94,7 @@ angular.module('app.controllers')
       popover.show();
     });
 
-    $scope.getString=localeFactory.getString;
+    $scope.getString = localeFactory.getString;
 
   }])
 ;

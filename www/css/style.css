@@ -30,3 +30,7 @@
 .list .item.item-accordion.ng-hide-remove {
   display: block !important;
 }
+
+.vertical-center{
+  vertical-align: middle;
+}
