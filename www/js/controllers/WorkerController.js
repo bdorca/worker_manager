@@ -54,8 +54,8 @@ angular.module('app.controllers')
           destructiveButtonClicked: function () {
 
             var confirmPopup = $ionicPopup.confirm({
-              title: localeFactory.getString("shutdown title").replace("${name}",master.name),
-              template: localeFactory.getString("shutdown sure"),
+              title: localeFactory.getString("shutdown title").replace("${name}",master.name).replace("$(id)", master.id),
+              template: localeFactory.getString("shutdown sure").replace("${name}",master.name).replace("$(id)", master.id),
               okText: "OK",
               cancelText: localeFactory.getString("cancel")
             });
@@ -64,8 +64,11 @@ angular.module('app.controllers')
               if (res) {
                 MasterService.shutdown(master, function (response) {
                   console.log(response)
+                  if( "err" in response.data){
+                    alertCallback(response.data.errMsg)
+                  }
                 }, function (response) {
-                  alertCallback(response)
+                  alertCallback()
                 });
               }
             })

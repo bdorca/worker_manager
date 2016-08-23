@@ -34,8 +34,8 @@ angular.module('app.services')
       "pull to": "Pull to refresh...",
       "master commands":"Master Commands",
       "cancel":"Cancel",
-      "shutdown title":"Shutdown ${name}",
-      "shutdown sure":"Are you sure, you want to shutdown the master?"
+      "shutdown title":"Shutdown ${name}-$(id)",
+      "shutdown sure":"Are you sure you want to shutdown?"
     };
 
     var hun = {
@@ -59,7 +59,7 @@ angular.module('app.services')
       "pull to": "Frissítéshez húzza le...",
       "master commands":"Master Parancsok",
       "cancel":"Mégse",
-      "shutdown title":"${name} Leállítása",
+      "shutdown title":"${name}-$(id) Leállítása",
       "shutdown sure":"Biztosan le akarja állítani?"
 
     };
