@@ -34,7 +34,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "gulp browserify",
     "dev": "npm run build && ionic serve",
-    "android": "npm run build && ionic run android"
+    "android": "npm run build && ionic run android",
+    "android-release": "npm run build && ionic build --release android && move platforms\\android\\build\\outputs\\apk\\android-release-unsigned.apk WorkerManager.apk && jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore mff-key.keystore WorkerManager.apk worker-manager && zipalign -v 4 WorkerManager.apk WorkerManager.apk.aligned && move WorkerManager.apk.aligned WorkerManager.apk"
+
   }
 
 }
