@@ -6,7 +6,7 @@ angular.module('app.controllers')
 
   .controller('workersCtrl', ['$scope','WorkerService', 'workerFactory','$state', 'localeFactory', '$ionicPopup',  function ($scope, WorkerService, workerFactory, $state, localeFactory, $ionicPopup) {
 
-    $scope.masters = workerFactory.getMasters();
+    $scope.masters = workerFactory.getMergedMasters();
 
     $scope.selected = function (id) {
       console.log(id)
@@ -34,12 +34,20 @@ angular.module('app.controllers')
 
     $scope.getString=localeFactory.getString;
 
-    $scope.toggleGroup = function(group) {
+    $scope.toggleWorkerGroup = function(group) {
       group.show = !group.show;
     };
-    $scope.isGroupShown = function(group) {
+    $scope.isWorkerGroupShown = function(group) {
       return group.show;
     };
+    $scope.toggleMasterGroup = function(group) {
+      group.show = !group.show;
+    };
+    $scope.isMasterGroupShown = function(group) {
+      return group.show;
+    };
+
+    $scope.refresh();
 
   }]);
 

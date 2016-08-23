@@ -7,8 +7,8 @@ angular.module('app.services')
     workerCommands = [
       {name: 'start', icon: 'ion-play'},
       {name: 'stop', icon: 'ion-stop'},
-      {name: 'reload', icon: 'ion-refresh'},
-      {name: 'status', icon: 'ion-search'}
+      {name: 'reload', icon: 'ion-loop'},
+      {name: 'status', icon: 'ion-refresh'}
     ];
 
     masterCommands=[

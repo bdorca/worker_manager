@@ -38,6 +38,7 @@ angular.module('app.services')
 
   .factory('workerFactory', [function () {
     var masterList = [];
+    var mergedMastersList = {};
 
     function setWorkerData(id, masterId, data) {
       for (var i = 0; i < masterList.length; i++) {
@@ -70,21 +71,43 @@ angular.module('app.services')
       masterList.push(master)
     }
 
+    function getWorker(workerId) {
+      for (var i = 0; i < masterList.length; i++) {
+        if (workerId.startsWith(masterList[i].id)) {
+          for (var j = 0; j < masterList[i].workers.length; j++) {
+            if (masterList[i].workers[j].id == workerId) {
+              return masterList[i].workers[j];
+            }
+          }
+        }
+      }
+    }
+
+    function mergeMasters() {
+      for (var m in mergedMastersList) {
+        delete mergedMastersList[m]
+      }
+      for (var i = 0; i < masterList.length; i++) {
+        var master = masterList[i];
+        if (!(master.name in mergedMastersList)) {
+          mergedMastersList[master.name] = {show: false, list: [], name: master.name, workerNum:0, runningNum:0}
+        }
+        mergedMastersList[master.name].list.push(master);
+        mergedMastersList[master.name].runningNum+=master.running();
+        mergedMastersList[master.name].workerNum+=master.workerNum();
+      }
+    }
+
     return {
       getMasters: function () {
         return masterList;
       },
-      getWorker: function (workerId) {
-        for (var i = 0; i < masterList.length; i++) {
-          if (workerId.startsWith(masterList[i].id)) {
-            for (var j = 0; j < masterList[i].workers.length; j++) {
-              if (masterList[i].workers[j].id == workerId) {
-                return masterList[i].workers[j];
-              }
-            }
-          }
-        }
+      getMergedMasters: function () {
+        return mergedMastersList;
+
       },
+      mergeMasters: mergeMasters,
+      getWorker: getWorker,
       setWorkerData: setWorkerData,
       addWorker: addWorker,
       addMaster: addMaster,
@@ -119,8 +142,8 @@ angular.module('app.services')
             var id = response.data.result.id;
             var masterId = response.data.result.masterId;
             var data = response.data.result;
-            for(var attr in response.data.result.currStatus){
-              data[attr]=response.data.result.currStatus[attr]
+            for (var attr in response.data.result.currStatus) {
+              data[attr] = response.data.result.currStatus[attr]
             }
             delete data["currStatus"];
             workerFactory.setWorkerData(id, masterId, data);
@@ -129,14 +152,14 @@ angular.module('app.services')
           successCallback(response);
         }
 
-        RequestService.sendRequest(mainURL + "controller/workercmd", METHODS.POST, true, defSuccessCallback, errorCallback, params.getParams(),finallyCallback);
+        RequestService.sendRequest(mainURL + "controller/workercmd", METHODS.POST, true, defSuccessCallback, errorCallback, params.getParams(), finallyCallback);
       } else {
-        RequestService.sendRequest(mainURL + "controller/workercmd", METHODS.POST, true, successCallback, errorCallback, params.getParams(),finallyCallback);
+        RequestService.sendRequest(mainURL + "controller/workercmd", METHODS.POST, true, successCallback, errorCallback, params.getParams(), finallyCallback);
       }
     }
 
-    this.start = function (worker, successCallback, errorCallback,finallyCallback) {
-      cmd(worker, COMMAND_TYPE.start, successCallback, errorCallback,finallyCallback)
+    this.start = function (worker, successCallback, errorCallback, finallyCallback) {
+      cmd(worker, COMMAND_TYPE.start, successCallback, errorCallback, finallyCallback)
     };
     this.stop = function (worker, successCallback, errorCallback, finallyCallback) {
       cmd(worker, COMMAND_TYPE.stop, successCallback, errorCallback, finallyCallback)
@@ -181,6 +204,10 @@ angular.module('app.services')
           }
         }
         setStatuses();
+        workerFactory.getMasters().sort(function (a, b) {
+          return a.name.localeCompare(b.name);
+        });
+        workerFactory.mergeMasters();
       }
 
       workerFactory.clean();
@@ -197,13 +224,13 @@ angular.module('app.services')
               var workers = response.data.localReg.workers;
 
               for (wid in workers) {
-                worker=workers[wid];
+                worker = workers[wid];
 
                 var id = worker.id;
                 var masterId = worker.masterId;
                 var data = worker;
-                for(var attr in worker.currStatus){
-                  data[attr]=worker.currStatus[attr]
+                for (var attr in worker.currStatus) {
+                  data[attr] = worker.currStatus[attr]
                 }
                 delete data["currStatus"];
                 workerFactory.setWorkerData(id, masterId, data);
