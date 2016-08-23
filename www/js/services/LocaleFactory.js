@@ -11,7 +11,7 @@ angular.module('app.services')
       eng: "english"
     };
 
-    var language = LANGUAGES.hun;
+    var language = LANGUAGES.eng;
 
     var eng = {
       "customer": "Customer ID",
@@ -31,7 +31,11 @@ angular.module('app.services')
       "login":"Login",
       "connection error title":"Connection error",
       "connecrion error":"Check your internet connection",
-      "pull to": "Pull to refresh..."
+      "pull to": "Pull to refresh...",
+      "master commands":"Master Commands",
+      "cancel":"Cancel",
+      "shutdown title":"Shutdown ${name}",
+      "shutdown sure":"Are you sure, you want to shutdown the master?"
     };
 
     var hun = {
@@ -52,7 +56,12 @@ angular.module('app.services')
       "login":"Bejelentkezés",
       "connection error title":"Kapcsolódási probléma",
       "connection error":"Ellenőrizze a hozzáférést",
-      "pull to": "Frissítéshez húzza le"
+      "pull to": "Frissítéshez húzza le...",
+      "master commands":"Master Parancsok",
+      "cancel":"Mégse",
+      "shutdown title":"${name} Leállítása",
+      "shutdown sure":"Biztosan le akarja állítani?"
+
     };
 
     function getString(id) {

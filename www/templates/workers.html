@@ -28,7 +28,8 @@
           <ion-item class="item-stable"
                     ng-click="toggleWorkerGroup(master)"
                     ng-show="isMasterGroupShown(masterGroup)"
-                    ng-class="{active: isWorkerGroupShown(master)}">
+                    ng-class="{active: isWorkerGroupShown(master)}"
+                    on-hold="showContextMenu(master)">
             <p class="item-icon-right"><i class="icon"
                                           ng-class="isWorkerGroupShown(master) ? 'ion-minus' : 'ion-plus'"></i></p>
             <p><b>{{master.name}}</b></p>
