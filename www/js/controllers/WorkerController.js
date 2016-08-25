@@ -6,7 +6,7 @@ angular.module('app.controllers')
 
   .controller('workersCtrl', ['$scope', 'WorkerService', 'workerFactory', '$state', 'localeFactory', '$ionicPopup', '$ionicActionSheet', 'commandFactory', 'MasterService',
     function ($scope, WorkerService, workerFactory, $state, localeFactory, $ionicPopup, $ionicActionSheet, commandFactory, MasterService) {
-
+      $scope.platform = ionic.Platform.platform();
       $scope.masters = workerFactory.getMergedMasters();
 
       $scope.selected = function (id) {

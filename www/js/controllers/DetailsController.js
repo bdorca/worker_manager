@@ -5,7 +5,7 @@
 angular.module('app.controllers')
 
   .controller('detailsCtrl', ['$scope', '$stateParams', '$ionicPopover', '$ionicPopup', 'workerFactory', 'commandFactory', 'WorkerService', 'localeFactory', function ($scope, $stateParams, $ionicPopover, $ionicPopup, workerFactory, commandFactory, WorkerService, localeFactory) {
-
+    $scope.platform = ionic.Platform.platform();
     $scope.selectedWorker = workerFactory.getWorker($stateParams.workerId);
     $scope.commands = commandFactory.getWorkerCommands();
     var poppedOver = false;
@@ -55,7 +55,7 @@ angular.module('app.controllers')
 
   }])
   .controller('masterdetailsCtrl', ['$scope', '$stateParams', '$ionicPopover', '$ionicPopup', 'workerFactory', 'commandFactory', 'MasterService', 'localeFactory', function ($scope, $stateParams, $ionicPopover, $ionicPopup, workerFactory, commandFactory, MasterService, localeFactory) {
-
+    $scope.platform = ionic.Platform.platform();
     $scope.selectedWorker = workerFactory.getWorker($stateParams.workerId);
     $scope.commands = commandFactory.getMasterCommands();
 

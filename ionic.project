@@ -1,8 +1,9 @@
 {
-  "name": "Worker_ionic",
+  "name": "WorkerManager",
   "app_id": "",
   "gulpStartupTasks": [
     "sass",
+    "browserify",
     "watch"
   ],
   "watchPatterns": [

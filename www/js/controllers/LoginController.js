@@ -5,7 +5,7 @@
 angular.module('app.controllers')
 
   .controller('loginCtrl', ['$scope', '$ionicPopup', '$state', 'RequestService', 'localeFactory', function ($scope, $ionicPopup, $state, RequestService, localeFactory) {
-
+    $scope.platform = ionic.Platform.platform();
     $scope.login = function () {
       var customer = document.getElementById('input_customer_id').value;
       var username = document.getElementById('input_user_id').value;
