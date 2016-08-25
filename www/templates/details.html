@@ -9,7 +9,7 @@
               on-tap="popover.show($event)"></button>
     </ion-nav-buttons>
   </ion-nav-bar>
-  <ion-floating-menu menu-color="#0083E5" menu-open-color="#0083E5">
+  <ion-floating-menu menu-color="#0083E5" menu-open-color="#0083E5" ng-show="platform=='android'">
     <ion-floating-item icon="{{command.icon}}" on-tap="cmd('{{command.name}}');" button-color="#0083E5"
                        ng-repeat='command in commands' text="{{getString(command.name)}}" icon-color="#FFFFFF"></ion-floating-item>
   </ion-floating-menu>
