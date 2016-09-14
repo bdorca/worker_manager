@@ -1,0 +1,19 @@
+npm install -g ios-sim
+npm install -g ios-deploy
+
+
+ionic platform add ios
+
+ionic prepare ios
+
+open in xcode
+
+add this to AppDelegate.m
+@implementation NSURLRequest(DataController)
++ (BOOL)allowsAnyHTTPSCertificateForHost:(NSString *)host
+{
+    return YES;
+}
+@end
+
+run
