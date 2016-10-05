@@ -1,6 +1,12 @@
 npm install -g ios-sim
 npm install -g ios-deploy
+npm install -g bower
+npm install -g gulp
 
+npm install
+bower install
+
+gulp browserify
 
 ionic platform add ios
 
